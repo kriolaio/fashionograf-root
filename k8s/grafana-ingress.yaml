@@ -1,0 +1,14 @@
+kind: Ingress
+apiVersion: extensions/v1beta1
+metadata:
+  name: grafana
+  namespace: monitoring
+spec:
+  rules:
+    - host: monitoring.fashionograf.com
+      http:
+        paths:
+          - path: "/"
+            backend:
+              serviceName: kube-prometheus-grafana
+              servicePort: 80

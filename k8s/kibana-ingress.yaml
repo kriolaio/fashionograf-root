@@ -1,0 +1,14 @@
+kind: Ingress
+apiVersion: extensions/v1beta1
+metadata:
+  name: kibana
+  namespace: logging
+spec:
+  rules:
+    - host: logging.fashionograf.com
+      http:
+        paths:
+          - path: "/"
+            backend:
+              serviceName: kibana-logging
+              servicePort: 5601

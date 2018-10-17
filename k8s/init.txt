@@ -1,0 +1,59 @@
+===================================================
+====Kubernetes Cluster Setup Steps for DigitalOcean ===
+====================================================
+
+
+sudo apt-get update \
+ && sudo apt-get install -qy docker.io
+
+
+===========================
+
+systemctl enable docker && systemctl start docker
+
+==============================
+
+swapoff -a
+
+==============================
+
+sudo apt-get update \
+ && sudo apt-get install -y apt-transport-https \
+ && curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+
+ =============================
+
+echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" \
+ | sudo tee -a /etc/apt/sources.list.d/kubernetes.list \
+ && sudo apt-get update
+
+ ==============================
+
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add - && \
+ echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list && \
+ sudo apt-get update -q && \
+ sudo apt-get install -qy kubelet kubeadm kubectl
+
+
+=====================================
+=============Only For Master ========
+=====================================
+
+
+kubeadm init --pod-network-cidr=10.244.0.0/16
+
+=======================================
+
+ mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+========================================
+
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+
+========================================
+========Connect From Local==============
+========================================
+
+scp -i pemkey.pem root@<Ip>:$HOME/.kube/config  $HOME/.kube/config
